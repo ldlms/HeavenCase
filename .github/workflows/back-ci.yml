@@ -1,0 +1,68 @@
+# Format, lint, test and build the Rust API.
+
+name: Back CI
+
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+    paths:
+      - "back/**"
+      - ".github/workflows/back-ci.yml"
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  back-ci:
+    name: back-ci
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: back
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: heavencase
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U admin -d heavencase"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgres://admin:password@localhost:5432/heavencase
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: back
+
+      - name: Format
+        run: cargo fmt --check
+
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Test
+        run: cargo test
+
+      - name: Build
+        run: cargo build --release

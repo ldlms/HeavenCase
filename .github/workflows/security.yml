@@ -1,0 +1,59 @@
+# Informational dependency audits. Failures never block a PR.
+
+name: Security audit
+
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+    paths:
+      - "front/package-lock.json"
+      - "back/Cargo.lock"
+      - ".github/workflows/security.yml"
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  npm-audit:
+    name: npm-audit
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    defaults:
+      run:
+        working-directory: front
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: npm audit
+        run: npm audit --audit-level=high
+
+  cargo-audit:
+    name: cargo-audit
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    defaults:
+      run:
+        working-directory: back
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+
+      - name: cargo audit
+        run: cargo audit
