@@ -1,4 +1,4 @@
-# Validate that PRs are only opened from the dev branch to the main branch of this repository.
+# Validate that PRs are only opened from the dev branch to the master branch of this repository.
 
 name: Validate PR source
 
@@ -32,8 +32,8 @@ jobs:
           echo "Head repo: $HEAD_REPO"
           echo "Current repo: $CURRENT_REPO"
 
-          if [ "$BASE_BRANCH" != "main" ]; then
-            echo "PR targets '$BASE_BRANCH', not main. No restriction."
+          if [ "$BASE_BRANCH" != "master" ]; then
+            echo "PR targets '$BASE_BRANCH', not master. No restriction."
             exit 0
           fi
 
@@ -47,4 +47,4 @@ jobs:
             exit 1
           fi
 
-          echo "Valid PR: dev -> main"
+          echo "Valid PR: dev -> master"

@@ -1,0 +1,245 @@
+# Single CI pipeline so every job appears on the same graph.
+# Jobs for an untouched part of the repo (front/back) are skipped.
+
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+
+permissions:
+  contents: read
+  pull-requests: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      front: ${{ steps.filter.outputs.front }}
+      back: ${{ steps.filter.outputs.back }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            front:
+              - "front/**"
+              - ".github/workflows/ci.yml"
+            back:
+              - "back/**"
+              - ".github/workflows/ci.yml"
+
+  # ---------- Front ----------
+
+  front-lint:
+    name: Front Lint
+    needs: changes
+    if: needs.changes.outputs.front == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: front
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: front/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run lint
+
+  front-build:
+    name: Front Build
+    needs: front-lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: front
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: front/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run build
+
+  docker-front:
+    name: Front Docker Build
+    needs: front-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: front
+          file: front/Dockerfile
+          push: false
+          cache-from: type=gha,scope=front
+          cache-to: type=gha,mode=max,scope=front
+
+  # ---------- Back ----------
+
+  back-fmt:
+    name: Back Fmt Check
+    needs: changes
+    if: needs.changes.outputs.back == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: back
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - run: cargo fmt --check
+
+  back-clippy:
+    name: Back Clippy Lint
+    needs: changes
+    if: needs.changes.outputs.back == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: back
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: back
+
+      - run: cargo clippy --all-targets -- -D warnings
+
+  back-test:
+    name: Back Test
+    needs: [back-fmt, back-clippy]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: back
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: heavencase
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U admin -d heavencase"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://admin:password@localhost:5432/heavencase
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: back
+
+      - run: cargo test
+
+  back-build:
+    name: Back Build
+    needs: back-test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: back
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: back
+
+      - run: cargo build --release
+
+  docker-back:
+    name: Back Docker Build
+    needs: back-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: back
+          file: back/dockerfile
+          push: false
+          cache-from: type=gha,scope=back
+          cache-to: type=gha,mode=max,scope=back
+
+  # ---------- Security (informational, never blocks) ----------
+
+  npm-audit:
+    name: Front npm Audit
+    needs: changes
+    if: needs.changes.outputs.front == 'true'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: front
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - run: npm audit --audit-level=high
+
+  cargo-audit:
+    name: Back Cargo Audit
+    needs: changes
+    if: needs.changes.outputs.back == 'true'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: back
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - run: cargo install cargo-audit --locked
+
+      - run: cargo audit
