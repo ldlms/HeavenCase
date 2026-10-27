@@ -1,6 +1,7 @@
 mod routes;
 mod state;
 mod errors;
+mod mailer;
 
 use state::AppState;
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
@@ -21,7 +22,7 @@ async fn main() {
         .await
         .expect("Échec des migrations");
 
-    let state = AppState::new(pool);
+    let state = AppState::new(pool, mailer::Mailer::from_env());
 
     let app = routes::router()
         .with_state(state)
