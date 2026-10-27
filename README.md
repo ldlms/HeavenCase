@@ -47,12 +47,10 @@ Battles de caisses, upgrades, contrats, niveaux, classements, parrainage, bonus 
 
 ```
 .
-├── frontend/     # Application React
-├── backend/      # API Rust
+├── front/        # Application React (Vite + TypeScript + Tailwind CSS v4)
+├── back/         # API Rust
 └── README.md
 ```
-
-> À adapter selon l'organisation réelle du dépôt.
 
 ## Démarrage
 
@@ -61,6 +59,14 @@ Battles de caisses, upgrades, contrats, niveaux, classements, parrainage, bonus 
 - Node.js (version LTS) et npm
 - Rust et Cargo (via [rustup](https://rustup.rs))
 - Git, configuré pour privilégier le rebase.
+
+### Front-end
+
+```bash
+cd front
+npm install
+npm run dev
+```
 
 ## Méthodologie
 
