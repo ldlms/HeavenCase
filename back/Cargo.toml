@@ -20,3 +20,4 @@ lettre = { version = "0.11", default-features = false, features = ["builder", "s
 sha2 = "0.11.1"
 hex = "0.4.3"
 uuid = { version = "1.29.0", features = ["serde"] }
+argon2 = "0.6.0"
