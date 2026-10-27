@@ -1,0 +1,12 @@
+GET http://localhost:3000/health
+
+###
+
+GET http://localhost:3000/health/db
+
+###
+GET http://localhost:3000/users/1
+
+###
+POST http://localhost:3000/users
+Content-Type: application/json

@@ -1,5 +1,5 @@
 [package]
-name = "gamblingproject"
+name = "heaven_case"
 version = "0.1.0"
 edition = "2024"
 
@@ -13,3 +13,4 @@ tower-http = { version = "0.7.1", features = ["cors", "trace"] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 routes = "0.1.0"
+sqlx = { version = "0.9.0", features = ["runtime-tokio", "postgres"] }
