@@ -1,5 +1,5 @@
 use lettre::{
-    message::header::ContentType, AsyncSmtpTransport, AsyncTransport, Message, Tokio1Executor,
+    AsyncSmtpTransport, AsyncTransport, Message, Tokio1Executor, message::header::ContentType,
 };
 
 #[derive(Clone)]

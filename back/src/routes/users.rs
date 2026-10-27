@@ -1,6 +1,10 @@
-use axum::{extract::{Path, State}, routing::get, Json, Router};
-use serde::{Deserialize, Serialize};
 use crate::{errors::AppError, state::AppState};
+use axum::{
+    Json, Router,
+    extract::{Path, State},
+    routing::get,
+};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct User {
@@ -15,12 +19,18 @@ pub fn router() -> Router<AppState> {
 }
 
 async fn list() -> Json<Vec<User>> {
-    Json(vec![User { id: 1, nom: "Leo".into() }])
+    Json(vec![User {
+        id: 1,
+        nom: "Leo".into(),
+    }])
 }
 
 async fn get_one(Path(id): Path<u32>) -> Result<Json<User>, AppError> {
     if id == 1 {
-        Ok(Json(User { id, nom: "Leo".into() }))
+        Ok(Json(User {
+            id,
+            nom: "Leo".into(),
+        }))
     } else {
         Err(AppError::NotFound(format!("User {id} introuvable")))
     }

@@ -1,7 +1,7 @@
-mod routes;
-mod state;
 mod errors;
 mod mailer;
+mod routes;
+mod state;
 
 use state::AppState;
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
@@ -13,9 +13,10 @@ async fn main() {
         .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
         .init();
 
-    let pool = sqlx::PgPool::connect(&std::env::var("DATABASE_URL").expect("DATABASE_URL manquante"))
-        .await
-        .expect("Connexion à la base impossible");
+    let pool =
+        sqlx::PgPool::connect(&std::env::var("DATABASE_URL").expect("DATABASE_URL manquante"))
+            .await
+            .expect("Connexion à la base impossible");
 
     sqlx::migrate!()
         .run(&pool)
@@ -30,7 +31,9 @@ async fn main() {
         .layer(CorsLayer::permissive());
 
     let port = std::env::var("PORT").unwrap_or_else(|_| "3000".to_string());
-    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{port}")).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{port}"))
+        .await
+        .unwrap();
 
     tracing::info!("Serveur sur http://localhost:{port}");
     axum::serve(listener, app).await.unwrap();
