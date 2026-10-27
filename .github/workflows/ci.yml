@@ -18,7 +18,7 @@ env:
 
 jobs:
   changes:
-    name: changes
+    name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
       front: ${{ steps.filter.outputs.front }}
@@ -40,7 +40,7 @@ jobs:
   # ---------- Front ----------
 
   front-lint:
-    name: front-lint
+    name: Front Lint
     needs: changes
     if: needs.changes.outputs.front == 'true'
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
       - run: npm run lint
 
   front-build:
-    name: front-build
+    name: Front Build
     needs: front-lint
     runs-on: ubuntu-latest
     defaults:
@@ -81,7 +81,7 @@ jobs:
       - run: npm run build
 
   docker-front:
-    name: docker-front
+    name: Front Docker Build
     needs: front-build
     runs-on: ubuntu-latest
     steps:
@@ -100,7 +100,7 @@ jobs:
   # ---------- Back ----------
 
   back-fmt:
-    name: back-fmt
+    name: Back Fmt Check
     needs: changes
     if: needs.changes.outputs.back == 'true'
     runs-on: ubuntu-latest
@@ -117,7 +117,7 @@ jobs:
       - run: cargo fmt --check
 
   back-clippy:
-    name: back-clippy
+    name: Back Clippy Lint
     needs: changes
     if: needs.changes.outputs.back == 'true'
     runs-on: ubuntu-latest
@@ -138,7 +138,7 @@ jobs:
       - run: cargo clippy --all-targets -- -D warnings
 
   back-test:
-    name: back-test
+    name: Back Test
     needs: [back-fmt, back-clippy]
     runs-on: ubuntu-latest
     defaults:
@@ -172,7 +172,7 @@ jobs:
       - run: cargo test
 
   back-build:
-    name: back-build
+    name: Back Build
     needs: back-test
     runs-on: ubuntu-latest
     defaults:
@@ -190,7 +190,7 @@ jobs:
       - run: cargo build --release
 
   docker-back:
-    name: docker-back
+    name: Back Docker Build
     needs: back-build
     runs-on: ubuntu-latest
     steps:
@@ -209,7 +209,7 @@ jobs:
   # ---------- Security (informational, never blocks) ----------
 
   npm-audit:
-    name: npm-audit
+    name: Front npm Audit
     needs: changes
     if: needs.changes.outputs.front == 'true'
     runs-on: ubuntu-latest
@@ -227,7 +227,7 @@ jobs:
       - run: npm audit --audit-level=high
 
   cargo-audit:
-    name: cargo-audit
+    name: Back Cargo Audit
     needs: changes
     if: needs.changes.outputs.back == 'true'
     runs-on: ubuntu-latest
