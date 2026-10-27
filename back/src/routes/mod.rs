@@ -1,4 +1,5 @@
 mod users;
+mod auth;
 
 use crate::state::AppState;
 use axum::extract::State;
