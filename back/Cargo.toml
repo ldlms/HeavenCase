@@ -13,4 +13,11 @@ tower-http = { version = "0.7.1", features = ["cors", "trace"] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 routes = "0.1.0"
-sqlx = { version = "0.9.0", features = ["runtime-tokio", "postgres"] }
+sqlx = { version = "0.9.0", features = ["runtime-tokio", "postgres", "uuid"] }
+utoipa = { version = "5", features = ["axum_extras", "uuid"] }
+utoipa-swagger-ui = { version = "9", features = ["axum", "vendored"] }
+lettre = { version = "0.11", default-features = false, features = ["builder", "smtp-transport", "tokio1", "hostname"] }
+sha2 = "0.11.1"
+hex = "0.4.3"
+uuid = { version = "1.29.0", features = ["serde"] }
+argon2 = "0.6.0"

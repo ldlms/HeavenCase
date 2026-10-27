@@ -11,9 +11,10 @@ services:
       DATABASE_URL: postgres://admin:password@postgres:5432/heavencase
       PORT: 3000
       RUST_LOG: info,tower_http=debug
-    depends_on:
-      postgres:
-        condition: service_healthy
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      MAIL_FROM: "heavenCase <no-reply@heavencase.local>"
+      APP_URL: http://localhost:3000
 
   postgres:
     image: postgres:17
@@ -29,6 +30,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: heaven-mailpit
+    ports:
+      - "127.0.0.1:8025:8025"
 
 volumes:
   postgres_data:

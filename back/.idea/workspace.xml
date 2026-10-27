@@ -12,7 +12,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="121b1cdb-e1a3-464c-aa72-e520b5d105cf" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/routes/auth.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,13 +47,14 @@
   &quot;keyToString&quot;: {
     &quot;CidrDebugProfileConversion&quot;: &quot;true&quot;,
     &quot;HTTP Request.All in api.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.api | #2.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.rust.reset.selective.auto.import&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feat/HENC-13/docker__BDD&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feat/HENC-30/signin__signout&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/leode/RustoverProjects/gamblingproject&quot;,
     &quot;node.js.detected.package.jshint&quot;: &quot;true&quot;,
@@ -61,6 +63,7 @@
     &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
     &quot;org.rust.cargo.project.model.impl.CargoExternalSystemProjectAware.subscribe.first.balloon&quot;: &quot;&quot;,
     &quot;org.rust.disableDetachedFileInspectionC:/Users/leode/RustoverProjects/gamblingproject/src/routes/users.rs&quot;: &quot;true&quot;,
+    &quot;org.rust.disableDetachedFileInspectionC:/Users/leode/heavenCase/back/src/mailer.rs&quot;: &quot;true&quot;,
     &quot;org.rust.first.attach.projects&quot;: &quot;true&quot;
   }
 }</component>
@@ -76,6 +79,7 @@
           <value>
             <map>
               <entry key="All in api" value="STOPPED" />
+              <entry key="api | #2" value="STOPPED" />
             </map>
           </value>
         </entry>
@@ -121,9 +125,16 @@
     <configuration name="All in api" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$PROJECT_DIR$/api.http">
       <method v="2" />
     </configuration>
+    <configuration name="api | #2" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/api.http" executionIdentifier="#2" index="2" runType="Run single request">
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="HTTP Request.api | #2" />
         <item itemvalue="HTTP Request.All in api" />
+        <item itemvalue="HTTP Request.api | #2" />
+        <item itemvalue="HTTP Request.All in api" />
+        <item itemvalue="HTTP Request.api | #2" />
       </list>
     </recent_temporary>
   </component>
